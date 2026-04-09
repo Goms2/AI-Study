@@ -1,4 +1,4 @@
-🚀AlexNet 논문 분석 — ImageNet Classification with Deep CNNs
+AlexNet 논문 분석 — ImageNet Classification with Deep CNNs
 
 "딥러닝 혁명의 시작"</br>
 AlexNet은 사람이 직접 규칙을 정하던 방식에서 벗어나, "깊은 신경망이 스스로 특징을 학습"하게 하여 컴퓨터 비전의 패러다임을 바꾼 모델.
