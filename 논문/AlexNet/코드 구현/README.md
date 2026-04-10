@@ -47,6 +47,7 @@ cd YOUR_REPO_NAME
 
 ```bash
 pip install -r requirements.txt
+pip install gradio  # 본인 환경에 맞는 버전으로 별도 설치
 ```
 
 > ⚠️ **참고:** GPU(CUDA)가 있는 환경에서는 훨씬 빠르게 실행됩니다. GPU가 없어도 CPU로 동작하지만 느릴 수 있습니다.
@@ -66,10 +67,9 @@ python app.py
 ### `requirements.txt` - 필요한 라이브러리
 
 ```
-torch        # PyTorch: 딥러닝 계산 핵심 라이브러리
-torchvision  # 사전 학습된 AlexNet 모델 불러오기에 사용
-pillow       # PIL: 이미지 파일 열기/저장/변환에 사용
-gradio       # 웹 UI 구성에 사용
+torch             # PyTorch: 딥러닝 계산 핵심 라이브러리
+torchvision       # 사전 학습된 AlexNet 모델 불러오기에 사용
+pillow            # PIL: 이미지 파일 열기/저장/변환에 사용
 ```
 
 > 💡 **초보자 팁:** `requirements.txt`는 "이 프로젝트를 실행하려면 이 라이브러리들이 필요해요"라고 알려주는 목록 파일입니다. `pip install -r requirements.txt` 명령어 하나로 모두 설치할 수 있습니다.
@@ -303,7 +303,6 @@ total_loss = c_loss + s_loss × style_weight
 torch
 torchvision
 pillow
-gradio
 ```
 
 ---
