@@ -101,7 +101,7 @@ AlexNet은 크게 세 가지 측면에서 기술적 돌파구를 마련했습니
 
 이 프로젝트는 **Hugging Face Spaces**를 통해 실시간 데모를 제공합니다. AlexNet이 층(Layer)마다 추출하는 시각적 정보를 활용한 **Style Transfer**를 직접 체험해 보세요.
 
-[👉 AlexNet Style Transfer 데모 바로가기](Goms2/AlexNet-based_Neural_Style_Transfer)
+[👉 AlexNet Style Transfer 데모 바로가기](https://huggingface.co/spaces/Goms2/AlexNet-based_Neural_Style_Transfer)
 
 ### ✨ 주요 기능
 * **Content Extraction:** AlexNet의 Conv5 레이어에서 사물의 형태와 구조 정보를 추출합니다.
