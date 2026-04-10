@@ -101,8 +101,8 @@ Style Loss = (결과 이미지의 Gram Matrix - 화풍 이미지의 Gram Matrix)
 ### 1. 저장소 클론
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/Goms2/AlexNet-based_Neural_Style_Transfer.git
+cd AlexNet-based_Neural_Style_Transfer
 ```
 
 > 💡 `git clone`은 GitHub 저장소를 내 컴퓨터로 복사하는 명령어입니다.
