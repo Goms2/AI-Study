@@ -382,7 +382,3 @@ transforms.Resize((512, 512))   # 여기를 수정
 ```
 
 ---
-
-## 📄 라이선스
-
-MIT License
