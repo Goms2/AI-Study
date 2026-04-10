@@ -83,7 +83,21 @@ AlexNet은 크게 세 가지 측면에서 기술적 돌파구를 마련했습니
 
 ---
 
-## 🔗 2. 논문 ↔ 코드 연결 (PyTorch)
+## 🏗️ 2. 구조 시각화 (Detailed Architecture Visualization)
+
+AlexNet의 전체적인 구조와 각 레이어에서의 데이터 형태(Shape) 변화를 한눈에 파악할 수 있는 시각화 자료입니다.
+
+![AlexNet 전체 구조도](./alexnet_architecture.png) *<br>AlexNet의 상세 구조와 텐서 변환 과정 (224x224 RGB 입력 기준)*
+
+### 📊 범례 (Legend)
+* 🟦 **Feature Extraction Layers (Conv)**: 컨볼루션, ReLU, 정규화(LRN), 풀링을 통해 특징 추출
+* 🟩 **Data Transformation Layer (Flatten)**: 3D 특징 맵을 1D 벡터로 변환
+* 🟥 **Classifier Layers (FC)**: 완전연결 레이어와 드롭아웃을 통해 분류 수행
+* 🟩 **Output Layer (Softmax)**: 각 클래스에 대한 확률 값 출력
+
+---
+
+## 🔗 3. 논문 ↔ 코드 연결 (PyTorch)
 
 | 논문 내용 (Paper Details) | PyTorch Code Implementation |
 | :--- | :--- |
@@ -97,7 +111,7 @@ AlexNet은 크게 세 가지 측면에서 기술적 돌파구를 마련했습니
 
 ---
 
-## 💻 3. 전체 모델 PyTorch 구현
+## 💻 4. 전체 모델 PyTorch 구현
 
 ```python
 import torch
