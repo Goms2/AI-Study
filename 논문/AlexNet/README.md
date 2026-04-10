@@ -83,21 +83,8 @@ AlexNet은 크게 세 가지 측면에서 기술적 돌파구를 마련했습니
 
 ---
 
-## 🏗️ 2. 구조 시각화 (Detailed Architecture Visualization)
 
-AlexNet의 전체적인 구조와 각 레이어에서의 데이터 형태(Shape) 변화를 한눈에 파악할 수 있는 시각화 자료입니다.
-
-![AlexNet 전체 구조도](./alexnet_architecture.png) *<br>AlexNet의 상세 구조와 텐서 변환 과정 (224x224 RGB 입력 기준)*
-
-### 📊 범례 (Legend)
-* 🟦 **Feature Extraction Layers (Conv)**: 컨볼루션, ReLU, 정규화(LRN), 풀링을 통해 특징 추출
-* 🟩 **Data Transformation Layer (Flatten)**: 3D 특징 맵을 1D 벡터로 변환
-* 🟥 **Classifier Layers (FC)**: 완전연결 레이어와 드롭아웃을 통해 분류 수행
-* 🟩 **Output Layer (Softmax)**: 각 클래스에 대한 확률 값 출력
-
----
-
-## 🔗 3. 논문 ↔ 코드 연결 (PyTorch)
+## 🔗 2. 논문 ↔ 코드 연결 (PyTorch)
 
 | 논문 내용 (Paper Details) | PyTorch Code Implementation |
 | :--- | :--- |
@@ -110,64 +97,3 @@ AlexNet의 전체적인 구조와 각 레이어에서의 데이터 형태(Shape)
 | **"1000-way softmax"** | `nn.Linear(4096, 1000)` + `nn.Softmax(dim=1)` |
 
 ---
-
-## 💻 4. 전체 모델 PyTorch 구현
-
-```python
-import torch
-import torch.nn as nn
-
-class AlexNet(nn.Module):
-    def __init__(self, num_classes=1000):
-        super(AlexNet, self).__init__()
-        
-        # ===== 합성곱 레이어 (Features) =====
-        self.features = nn.Sequential(
-            # Conv1: 224x224x3 -> 55x55x96
-            nn.Conv2d(3, 96, kernel_size=11, stride=4, padding=0),
-            nn.ReLU(inplace=True),
-            nn.LocalResponseNorm(size=5, alpha=1e-4, beta=0.75, k=2),
-            nn.MaxPool2d(kernel_size=3, stride=2),  # -> 27x27x96
-            
-            # Conv2: 27x27x96 -> 27x27x256
-            nn.Conv2d(96, 256, kernel_size=5, padding=2),
-            nn.ReLU(inplace=True),
-            nn.LocalResponseNorm(size=5, alpha=1e-4, beta=0.75, k=2),
-            nn.MaxPool2d(kernel_size=3, stride=2),  # -> 13x13x256
-            
-            # Conv3: 13x13x256 -> 13x13x384
-            nn.Conv2d(256, 384, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            
-            # Conv4: 13x13x384 -> 13x13x384
-            nn.Conv2d(384, 384, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            
-            # Conv5: 13x13x384 -> 6x6x256 (After Pooling)
-            nn.Conv2d(384, 256, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=3, stride=2),
-        )
-        
-        # ===== 완전연결 레이어 (Classifier) =====
-        self.classifier = nn.Sequential(
-            nn.Dropout(p=0.5),
-            nn.Linear(6 * 6 * 256, 4096),
-            nn.ReLU(inplace=True),
-            nn.Dropout(p=0.5),
-            nn.Linear(4096, 4096),
-            nn.ReLU(inplace=True),
-            nn.Linear(4096, num_classes),
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)  # Flatten: (batch, 9216)
-        x = self.classifier(x)
-        return x
-
-# 모델 생성 및 테스트
-model = AlexNet(num_classes=1000)
-dummy_input = torch.randn(1, 3, 224, 224)
-output = model(dummy_input)
-print(f"Output shape: {output.shape}")  # torch.Size([1, 1000])
