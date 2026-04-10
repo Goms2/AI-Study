@@ -39,8 +39,8 @@
 ### 1단계 - 저장소 클론
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
+git clone https://github.com/Goms2/AlexNet-based_Neural_Style_Transfer.git
+cd AlexNet-based_Neural_Style_Transfer
 ```
 
 ### 2단계 - 라이브러리 설치
