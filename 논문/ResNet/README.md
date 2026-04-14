@@ -396,21 +396,21 @@ ResNet-50 기준, 이미지 1장(`batch=1`)이 통과할 때의 텐서 shape 변
         ▼  [MaxPool: 3×3, stride 2]
 (1, 64, 56, 56)        # 112÷2=56
         │
-        ▼  [conv2_x: Bottleneck ×3]
+        ▼  [conv2_x: Bottleneck ×3, 채널 64→256]
 (1, 256, 56, 56)       # 크기 유지  |  채널: 64×4=256
         │
-        ▼  [conv3_x: Bottleneck ×4, stride 2]
+        ▼  [conv3_x: Bottleneck ×4, stride 2, 채널 128→512]
 (1, 512, 28, 28)       # 56÷2=28   |  채널: 128×4=512
         │
-        ▼  [conv4_x: Bottleneck ×6, stride 2]
+        ▼  [conv4_x: Bottleneck ×6, stride 2, 채널 256→1024]
 (1, 1024, 14, 14)      # 28÷2=14   |  채널: 256×4=1024
         │
-        ▼  [conv5_x: Bottleneck ×3, stride 2]
+        ▼  [conv5_x: Bottleneck ×3, stride 2, 채널 512→2048]
 (1, 2048, 7, 7)        # 14÷2=7    |  채널: 512×4=2048
         │
         ▼  [Global Average Pooling]
 (1, 2048, 1, 1)  →  flatten  →  (1, 2048)
-        │
+        │ 
         ▼  [FC Layer: 2048 → 1000]
 (1, 1000)              # 1000개 클래스 점수
         │
