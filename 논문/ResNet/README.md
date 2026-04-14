@@ -12,6 +12,8 @@
 4. [잔차 블록 (Residual Block)](#-잔차-블록-residual-block--핵심)
 5. [논문 ↔ 코드 연결 (PyTorch)](#-논문--코드-연결-pytorch)
 6. [ResNet 구조 한눈에 보기](#-resnet-구조-한눈에-보기)
+7. [전체 ResNet-50 구현 코드](#-전체-resnet-50-구현-코드)
+8. [데이터 흐름 추적 (Shape 변화)](#-데이터-흐름-추적-shape-변화)
 
 ---
 
@@ -136,9 +138,9 @@ ReLU(x) = max(0, x)
   │
   ├──────────────────────────┐  (숏컷 연결)
   │                          │
-Conv 3×3 → BN → ReLU         │
+Conv 3×3 → BN → ReLU        │
   │                          │
-Conv 3×3 → BN                │
+Conv 3×3 → BN               │
   │                          │
   └──────── (+) ─────────────┘
               │
@@ -154,11 +156,11 @@ Conv 3×3 → BN                │
   │
   ├──────────────────────────────┐  (숏컷 연결)
   │                              │
-Conv 1×1 → BN → ReLU  (채널 축소) │
+Conv 1×1 → BN → ReLU  (채널 축소)│
   │                              │
-Conv 3×3 → BN → ReLU  (특징 추출) │
+Conv 3×3 → BN → ReLU  (특징 추출)│
   │                              │
-Conv 1×1 → BN         (채널 복원) │
+Conv 1×1 → BN         (채널 복원)│
   │                              │
   └──────────── (+) ─────────────┘
                  │
@@ -249,16 +251,16 @@ class BottleneckBlock(nn.Module):
    3×3 MaxPool, stride 2
         │
    ┌────┴────┐
-   │  Layer2 │  Residual Blocks × N
+   │  Layer1 │  Residual Blocks × N
+   └────┬────┘
+   ┌────┴────┐
+   │  Layer2 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
    ┌────┴────┐
    │  Layer3 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
    ┌────┴────┐
    │  Layer4 │  Residual Blocks × N (stride 2로 해상도 절반)
-   └────┬────┘
-   ┌────┴────┐
-   │  Layer5 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
         │
    Global Average Pooling
@@ -275,6 +277,148 @@ class BottleneckBlock(nn.Module):
 | ResNet-50 | Bottleneck | 50 | 25.6M |
 | ResNet-101 | Bottleneck | 101 | 44.5M |
 | ResNet-152 | Bottleneck | 152 | 60.2M |
+
+---
+
+## 🖥️ 전체 ResNet-50 구현 코드
+
+```python
+import torch
+import torch.nn as nn
+
+# ① 병목 블록 (Bottleneck Block) - ResNet-50/101/152용
+class BottleneckBlock(nn.Module):
+    expansion = 4  # 출력 채널 = 입력 채널 × 4
+
+    def __init__(self, in_channels, mid_channels, stride=1):
+        super().__init__()
+
+        # 논문의 F(x) 부분 (잔차 학습)
+        self.conv1 = nn.Conv2d(in_channels, mid_channels, kernel_size=1, bias=False)
+        self.bn1   = nn.BatchNorm2d(mid_channels)
+
+        self.conv2 = nn.Conv2d(mid_channels, mid_channels, kernel_size=3,
+                               stride=stride, padding=1, bias=False)
+        self.bn2   = nn.BatchNorm2d(mid_channels)
+
+        self.conv3 = nn.Conv2d(mid_channels, mid_channels * self.expansion,
+                               kernel_size=1, bias=False)
+        self.bn3   = nn.BatchNorm2d(mid_channels * self.expansion)
+
+        self.relu  = nn.ReLU(inplace=True)
+
+        # 숏컷 연결 - 채널 수나 크기가 다를 때 1×1 conv로 맞춤
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_channels != mid_channels * self.expansion:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, mid_channels * self.expansion,
+                          kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(mid_channels * self.expansion)
+            )
+
+    def forward(self, x):
+        identity = x  # 원래 입력값 저장 (숏컷용)
+
+        out = self.relu(self.bn1(self.conv1(x)))   # 1×1 conv
+        out = self.relu(self.bn2(self.conv2(out))) # 3×3 conv
+        out = self.bn3(self.conv3(out))            # 1×1 conv (ReLU 전)
+
+        # 핵심! F(x) + x
+        out += self.shortcut(identity)
+        out = self.relu(out)
+        return out
+
+
+# ② 전체 ResNet-50 모델
+class ResNet50(nn.Module):
+    def __init__(self, num_classes=1000):
+        super().__init__()
+
+        # conv1
+        self.conv1   = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1     = nn.BatchNorm2d(64)
+        self.relu    = nn.ReLU(inplace=True)
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+        # conv2_x ~ conv5_x
+        self.layer1 = self._make_layer(64,   64,  blocks=3, stride=1)
+        self.layer2 = self._make_layer(256,  128, blocks=4, stride=2)
+        self.layer3 = self._make_layer(512,  256, blocks=6, stride=2)
+        self.layer4 = self._make_layer(1024, 512, blocks=3, stride=2)
+
+        # 분류기
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.fc      = nn.Linear(2048, num_classes)
+
+    def _make_layer(self, in_channels, mid_channels, blocks, stride):
+        layers = [BottleneckBlock(in_channels, mid_channels, stride=stride)]
+        for _ in range(1, blocks):
+            layers.append(BottleneckBlock(mid_channels * 4, mid_channels))
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        x = self.maxpool(self.relu(self.bn1(self.conv1(x))))  # conv1
+        x = self.layer1(x)  # conv2_x
+        x = self.layer2(x)  # conv3_x
+        x = self.layer3(x)  # conv4_x
+        x = self.layer4(x)  # conv5_x
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        return x
+
+
+# 사용 예시
+model = ResNet50(num_classes=1000)
+dummy = torch.randn(1, 3, 224, 224)  # 이미지 1장
+output = model(dummy)
+print(output.shape)  # → torch.Size([1, 1000])
+```
+
+---
+
+## 📊 데이터 흐름 추적 (Shape 변화)
+
+ResNet-50 기준, 이미지 1장(`batch=1`)이 통과할 때의 텐서 shape 변화입니다.
+
+```
+입력 이미지
+(1, 3, 224, 224)
+        │
+        ▼  [conv1: 7×7, stride 2, 64 filters]
+(1, 64, 112, 112)      # 224÷2=112  |  채널: 3 → 64
+        │
+        ▼  [MaxPool: 3×3, stride 2]
+(1, 64, 56, 56)        # 112÷2=56
+        │
+        ▼  [conv2_x: Bottleneck ×3]
+(1, 256, 56, 56)       # 크기 유지  |  채널: 64×4=256
+        │
+        ▼  [conv3_x: Bottleneck ×4, stride 2]
+(1, 512, 28, 28)       # 56÷2=28   |  채널: 128×4=512
+        │
+        ▼  [conv4_x: Bottleneck ×6, stride 2]
+(1, 1024, 14, 14)      # 28÷2=14   |  채널: 256×4=1024
+        │
+        ▼  [conv5_x: Bottleneck ×3, stride 2]
+(1, 2048, 7, 7)        # 14÷2=7    |  채널: 512×4=2048
+        │
+        ▼  [Global Average Pooling]
+(1, 2048, 1, 1)  →  flatten  →  (1, 2048)
+        │
+        ▼  [FC Layer: 2048 → 1000]
+(1, 1000)              # 1000개 클래스 점수
+        │
+        ▼  [Softmax]
+(1, 1000)              # 합이 1인 확률값 분포
+```
+
+### 💡 핵심 패턴 2가지
+
+| 패턴 | 설명 |
+|------|------|
+| **해상도 ↓ → 채널 ↑** | 이미지 크기가 절반이 될 때마다 채널 수는 두 배 → 계산량을 일정하게 유지하는 설계 원칙 |
+| **병목 채널 흐름** | Bottleneck 블록 내부는 항상 **"압축 → 처리 → 복원"** 패턴 (예: 256 → 64 → 64 → 256) |
 
 ---
 
