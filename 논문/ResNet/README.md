@@ -192,7 +192,7 @@ Conv 1×1 → BN         (채널 복원) │
 | `BN right after each convolution` | `nn.BatchNorm2d(64)` |
 | `ReLU activation` | `nn.ReLU(inplace=True)` |
 | `3×3 max pool, stride 2` | `nn.MaxPool2d(kernel_size=3, stride=2, padding=1)` |
-| `F(x) + x` (shortcut connection) | `out += self.shortcut(x)` |
+| `F(x) + x` (shortcut connection) | `out += self.shortcut(x)`(잔차 덧셈)|
 | `1×1 conv to match dimensions` | `nn.Conv2d(in_ch, out_ch, kernel_size=1, stride=stride, bias=False)` |
 | `global average pooling` | `nn.AdaptiveAvgPool2d((1, 1))` |
 | `1000-way FC with softmax` | `nn.Linear(2048, 1000)` |
