@@ -249,16 +249,16 @@ class BottleneckBlock(nn.Module):
    3×3 MaxPool, stride 2
         │
    ┌────┴────┐
-   │  Layer1 │  Residual Blocks × N
-   └────┬────┘
-   ┌────┴────┐
-   │  Layer2 │  Residual Blocks × N (stride 2로 해상도 절반)
+   │  Layer2 │  Residual Blocks × N
    └────┬────┘
    ┌────┴────┐
    │  Layer3 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
    ┌────┴────┐
    │  Layer4 │  Residual Blocks × N (stride 2로 해상도 절반)
+   └────┬────┘
+   ┌────┴────┐
+   │  Layer5 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
         │
    Global Average Pooling
