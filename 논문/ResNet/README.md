@@ -138,9 +138,9 @@ ReLU(x) = max(0, x)
   │
   ├──────────────────────────┐  (숏컷 연결)
   │                          │
-Conv 3×3 → BN → ReLU        │
+Conv 3×3 → BN → ReLU         │
   │                          │
-Conv 3×3 → BN               │
+Conv 3×3 → BN                │
   │                          │
   └──────── (+) ─────────────┘
               │
@@ -156,11 +156,11 @@ Conv 3×3 → BN               │
   │
   ├──────────────────────────────┐  (숏컷 연결)
   │                              │
-Conv 1×1 → BN → ReLU  (채널 축소)│
+Conv 1×1 → BN → ReLU  (채널 축소) │
   │                              │
-Conv 3×3 → BN → ReLU  (특징 추출)│
+Conv 3×3 → BN → ReLU  (특징 추출) │
   │                              │
-Conv 1×1 → BN         (채널 복원)│
+Conv 1×1 → BN         (채널 복원) │
   │                              │
   └──────────── (+) ─────────────┘
                  │
@@ -251,16 +251,16 @@ class BottleneckBlock(nn.Module):
    3×3 MaxPool, stride 2
         │
    ┌────┴────┐
-   │  Layer1 │  Residual Blocks × N
-   └────┬────┘
-   ┌────┴────┐
-   │  Layer2 │  Residual Blocks × N (stride 2로 해상도 절반)
+   │  Layer2 │  Residual Blocks × N
    └────┬────┘
    ┌────┴────┐
    │  Layer3 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
    ┌────┴────┐
    │  Layer4 │  Residual Blocks × N (stride 2로 해상도 절반)
+   └────┬────┘
+   ┌────┴────┐
+   │  Layer5 │  Residual Blocks × N (stride 2로 해상도 절반)
    └────┬────┘
         │
    Global Average Pooling
