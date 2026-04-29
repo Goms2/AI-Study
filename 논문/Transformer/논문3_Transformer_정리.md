@@ -108,7 +108,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 Attention(Q, K, V) = $softmax(QK^T / √d_k) V$
 ```
 
-**왜 √$d_k$로 나눌까?**
+**왜 √d_k로 나눌까?**
 > Q·K 내적값이 차원이 클수록 커져서 softmax가 한쪽에 극단적으로 쏠립니다 (기울기 소실).
 >
 > √$d_k$로 나눠 안정화합니다.
