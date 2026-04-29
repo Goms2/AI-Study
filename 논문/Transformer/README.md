@@ -206,6 +206,12 @@ output = LayerNorm(x + Sublayer(x))
 | **출력** | `(batch, seq_len, d_model)` (shape 동일) |
 | **하이퍼파라미터** | 없음 (학습 파라미터만 존재) |
 
+참고: 논문 원본에서는 Sublayer(x) + x를 먼저 하고 그 결과에 LayerNorm을 적용합니다. 하지만 최근 PyTorch 공식 구현이나 성능 최적화 모델들은 LayerNorm을 먼저 하는 Pre-LN 구조를 더 많이 사용
+
+> 논문 방식 (Post-LN): LayerNorm(x + Sublayer(x))
+
+> 최근 트렌드 (Pre-LN): x + Sublayer(LayerNorm(x))
+
 ---
 
 ### ⑦ Encoder-Decoder Attention (Decoder 2번째 sub-layer)
