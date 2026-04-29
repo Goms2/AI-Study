@@ -105,7 +105,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 **수식:**
 
 ```
-Attention(Q, K, V) = $softmax(QK^T / √d_k) V$
+Attention(Q, K, V) = softmax(QK^T / √d_k) V
 ```
 
 **왜 √d_k로 나눌까?**
