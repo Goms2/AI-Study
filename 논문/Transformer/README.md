@@ -93,7 +93,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 
 ---
 
-### ② Scaled Dot-Product Attention ⭐
+### ② Self-Attention ⭐
 
 > 📚 **비유**: **도서관에서 책 찾기**
 > - **Query**: "사랑에 관한 책이 필요해" (질문)
@@ -242,18 +242,18 @@ output = LayerNorm(x + Sublayer(x))
          Add & Norm                                     Add & Norm
    ┌───────────▼────────────┐               ┌─────────────────▼─────────────┐
    │   Feed Forward         │               │  Encoder-Decoder Attention    │◄── (K, V)
-   └───────────┬────────────┘               │  (Q는 Decoder, K/V는 Encoder)  │
+   └───────────┬────────────┘               │  (Q는 Decoder, K/V는 Encoder) │
          Add & Norm                         └─────────────────┬─────────────┘
                │                                        Add & Norm
        × N=6 layers                          ┌─────────────────▼─────────────┐
-               │                              │       Feed Forward            │
-            [Encoder]    ──────────►          └─────────────────┬─────────────┘
+               │                             │       Feed Forward            │
+            [Encoder]    ──────────►         └─────────────────┬─────────────┘
          (출력을 K, V로 전달)                              Add & Norm
-                                                                │
+                                                               │
                                                         × N=6 layers
-                                                                │
+                                                               │
                                                         Linear + Softmax
-                                                                │
+                                                               │
                                                     [Output Probabilities]
                                                           [Decoder]
 ```
