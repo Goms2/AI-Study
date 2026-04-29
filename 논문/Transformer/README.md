@@ -220,9 +220,9 @@ output = LayerNorm(x + Sublayer(x))
 
 | 출처 | 역할 |
 |------|------|
-| **Query** | Decoder의 이전 층 출력 (지금 만드는 단어) |
-| **Key** | Encoder의 최종 출력 (원문 전체) |
-| **Value** | Encoder의 최종 출력 (원문 전체) |
+| **Query** | Decoder의 Masked Self-Attention을 거쳐 나온 출력값 (지금 만드는 단어) |
+| **Key** | Encoder의 최종(6번째 층) 출력 (원문 전체) |
+| **Value** | Encoder의 최종(6번째 층) 출력 (원문 전체) |
 
 | 항목 | 내용 |
 |------|------|
