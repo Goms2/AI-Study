@@ -93,7 +93,7 @@ PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
 
 ---
 
-### ② Self-Attention ⭐
+### ②  Scaled Dot-Product Attention ⭐
 
 > 📚 **비유**: **도서관에서 책 찾기**
 > - **Query**: "사랑에 관한 책이 필요해" (질문)
