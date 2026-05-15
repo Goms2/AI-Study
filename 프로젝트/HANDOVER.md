@@ -78,21 +78,21 @@
 사용자 입력
    │
    ▼
-┌────────────────────────────────────────────────────────────┐
-│  FoodChatbot.chat()                                        │
-│  1. user_data.db 에 user 메시지 저장                          │
-│  2. Anthropic API 호출 (system + tools 4개 + messages)      │
-│  3. LLM 도구 호출 (stop_reason='tool_use') →                │
-│     ├ search_food_by_meaning                               │
-│     │    → FoodSearcher (ChromaDB food_database + SQLite)  │
-│     ├ search_nutrition_guidelines  ⭐ 신규                   │
+┌─────────────────────────────────────────────────────────────┐
+│  FoodChatbot.chat()                                         │
+│  1. user_data.db 에 user 메시지 저장                         │
+│  2. Anthropic API 호출 (system + tools 4개 + messages)       │
+│  3. LLM 도구 호출 (stop_reason='tool_use') →                 │
+│     ├ search_food_by_meaning                                │
+│     │    → FoodSearcher (ChromaDB food_database + SQLite)   │
+│     ├ search_nutrition_guidelines  ⭐ 신규                  │
 │     │    → GuidelineSearcher (ChromaDB nutrition_guidelines)│
 │     │    → min_similarity 0.45 필터로 노이즈 차단             │
-│     ├ get_user_profile / update_user_profile                │
-│     │    → HistoryStore                                     │
-│  4. 결과를 LLM에 다시 → 최종 답변 (출처 인용 + 의료 면책)      │
-│  5. user_data.db 에 assistant 메시지 저장                    │
-└────────────────────────────────────────────────────────────┘
+│     ├ get_user_profile / update_user_profile                 │
+│     │    → HistoryStore                                      │
+│  4. 결과를 LLM에 다시 → 최종 답변 (출처 인용 + 의료 면책)       │
+│  5. user_data.db 에 assistant 메시지 저장                     │
+└──────────────────────────────────────────────────────────────┘
    │
    ▼
 사용자에게 답변
