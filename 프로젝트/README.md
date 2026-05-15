@@ -195,7 +195,7 @@ food_chatbot/
 
 ## 📚 더 자세히
 
-- **팀 인계 / 아키텍처 / 남은 작업**: [HANDOVER.md](./HANDOVER.md)
+- **팀 인계 / 아키텍처 / 남은 작업**: [RAG_HANDOVER_3.md](./RAG_HANDOVER_3.md)
 - **계획서 원본**: 별첨
 
 ---
