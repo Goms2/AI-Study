@@ -173,7 +173,7 @@ food_chatbot/
 │
 └── 📜 문서
     ├── README.md              # 이 파일
-    └── HANDOVER.md            # 팀 인계 문서 (더 자세히)
+    └── RAG_HANDOVER_3.md      # 팀 인계 문서 (더 자세히)
 ```
 
 ---
